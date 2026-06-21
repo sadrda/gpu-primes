@@ -11,10 +11,10 @@ permissions:
   pages: write
   id-token: write
 
-# Allow one concurrent deployment; cancel in-progress runs for new pushes.
+# Allow only one concurrent deployment; let an in-progress run finish.
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   build:
@@ -27,6 +27,7 @@ jobs:
           cache: yarn
       - run: yarn install --frozen-lockfile
       - run: yarn build
+      - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

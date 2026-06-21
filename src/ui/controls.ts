@@ -1,7 +1,7 @@
 const numberFmt = new Intl.NumberFormat("en-US");
 
 const N_MIN = 1_000;
-const N_MAX = 50_000_000;
+const N_MAX = 100_000_000;
 const LOG_MIN = Math.log10(N_MIN);
 const LOG_MAX = Math.log10(N_MAX);
 const SLIDER_STEPS = 1000;

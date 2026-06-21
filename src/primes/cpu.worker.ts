@@ -7,7 +7,7 @@ import type { CpuRequest, CpuResponse } from './types.ts'
  * This is deliberately the SAME algorithm the GPU shader runs (no sieve), so
  * the CPU-vs-GPU comparison isolates raw parallelism rather than algorithmic
  * differences. The sum is accumulated in a JS number (f64), which is exact for
- * integers up to 2^53 — far above the ~7.3e13 max at n = 50,000,000.
+ * integers up to 2^53 — far above the ~2.8e14 max at n = 100,000,000.
  */
 function sumPrimesBelow(n: number): number {
   let sum = 0

@@ -2,10 +2,10 @@
 // primality (trial division — the same algorithm the CPU runs), then the
 // workgroup reduces its 256 results into a single u32 partial sum.
 //
-// Why partial sums: the full sum of primes below N (e.g. ~7.3e13 at N=50M)
+// Why partial sums: the full sum of primes below N (e.g. ~2.8e14 at N=100M)
 // overflows a u32. But one workgroup covers 256 consecutive numbers, and primes
-// are sparse, so a workgroup's partial sum stays well under 2^32 for N up to a
-// few hundred million (empirically ~1.3e9 max at N=50M). The host sums the
+// are sparse, so a workgroup's partial sum stays under 2^32 up to ~167M
+// (empirically ~2.55e9 max at N=100M, i.e. 1.68x headroom). The host sums the
 // partials in f64 (exact to 2^53).
 //
 // The dispatch is a 2D grid (X capped at the 65,535-per-dimension limit), so we

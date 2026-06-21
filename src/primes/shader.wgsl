@@ -1,7 +1,3 @@
-// One invocation per candidate number. Each invocation tests its number for
-// primality (trial division — the same algorithm the CPU runs), then the
-// workgroup reduces its 256 results into a single u32 partial sum.
-//
 // Why partial sums: the full sum of primes below N (e.g. ~2.8e14 at N=100M)
 // overflows a u32. But one workgroup covers 256 consecutive numbers, and primes
 // are sparse, so a workgroup's partial sum stays under 2^32 up to ~167M
@@ -27,7 +23,7 @@ fn is_prime(k: u32) -> bool {
   if (k == 2u) { return true; }
   if ((k & 1u) == 0u) { return false; }
   var i: u32 = 3u;
-  // i * i <= k. For k < 1e7, i stays < ~3163, so i*i never overflows u32.
+  // For k < 1e8, i stays < ~10000, so i*i never overflows u32.
   loop {
     if (i * i > k) { break; }
     if (k % i == 0u) { return false; }
@@ -42,7 +38,6 @@ fn main(
   @builtin(workgroup_id) wid: vec3<u32>,
   @builtin(num_workgroups) nwg: vec3<u32>,
 ) {
-  // Linear workgroup index across the 2D dispatch grid.
   let wg_index = wid.y * nwg.x + wid.x;
   let k = wg_index * WORKGROUP_SIZE + lid.x;
   var value: u32 = 0u;
@@ -53,7 +48,6 @@ fn main(
 
   workgroupBarrier();
 
-  // Tree reduction within the workgroup.
   var stride: u32 = WORKGROUP_SIZE / 2u;
   loop {
     if (stride == 0u) { break; }

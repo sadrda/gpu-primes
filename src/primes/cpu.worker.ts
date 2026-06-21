@@ -2,10 +2,8 @@
 import type { CpuRequest, CpuResponse } from './types.ts'
 
 /**
- * Sum of all primes strictly smaller than n, using trial division.
- *
- * This is deliberately the SAME algorithm the GPU shader runs (no sieve), so
- * the CPU-vs-GPU comparison isolates raw parallelism rather than algorithmic
+ * Deliberately the SAME algorithm the GPU shader runs (no sieve), so the
+ * CPU-vs-GPU comparison isolates raw parallelism rather than algorithmic
  * differences. The sum is accumulated in a JS number (f64), which is exact for
  * integers up to 2^53 — far above the ~2.8e14 max at n = 100,000,000.
  */

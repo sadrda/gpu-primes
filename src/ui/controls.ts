@@ -6,13 +6,11 @@ const LOG_MIN = Math.log10(N_MIN);
 const LOG_MAX = Math.log10(N_MAX);
 const SLIDER_STEPS = 1000;
 
-/** Maps a slider position (0..SLIDER_STEPS) to N on a log scale. */
 function sliderToN(pos: number): number {
   const log = LOG_MIN + (pos / SLIDER_STEPS) * (LOG_MAX - LOG_MIN);
   return Math.round(10 ** log);
 }
 
-/** Inverse of sliderToN, for setting the initial slider position from N. */
 function nToSlider(n: number): number {
   const log = Math.log10(n);
   return Math.round(((log - LOG_MIN) / (LOG_MAX - LOG_MIN)) * SLIDER_STEPS);
@@ -20,11 +18,8 @@ function nToSlider(n: number): number {
 
 export interface Controls {
   el: HTMLElement;
-  /** Current value of N. */
   getN: () => number;
-  /** Enable/disable the run button (e.g. while a run is in flight). */
   setRunning: (running: boolean) => void;
-  /** Registers the run handler. */
   onRun: (handler: () => void) => void;
 }
 

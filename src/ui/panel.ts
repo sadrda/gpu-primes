@@ -2,11 +2,6 @@ import type { PrimeResult } from '../primes/types.ts'
 
 const numberFmt = new Intl.NumberFormat('en-US')
 
-/**
- * A result panel for one compute path (CPU or GPU). Shows the prime sum, the
- * elapsed time, and a bar whose fill is proportional to time (longer = slower),
- * giving the side-by-side "race" a visual readout.
- */
 export class Panel {
   readonly el: HTMLElement
   private readonly sumEl: HTMLElement
@@ -35,7 +30,6 @@ export class Panel {
     this.barEl.style.width = '0%'
   }
 
-  /** Renders a finished result. `barFraction` is 0..1 relative to the slowest. */
   setResult(result: PrimeResult, barFraction: number) {
     this.el.classList.remove('is-running', 'is-error')
     this.el.classList.add('is-done')

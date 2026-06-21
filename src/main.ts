@@ -70,21 +70,35 @@ async function runRace() {
   cpuPanel.setRunning()
   if (gpuReady) gpuPanel.setRunning()
 
-  const [cpuSettled, gpuSettled] = await Promise.allSettled([
-    sumPrimesCpu(n),
-    gpuReady ? sumPrimesGpu(n) : Promise.reject(new Error('unavailable')),
-  ])
+  let cpu: PrimeResult | null = null
+  let gpu: PrimeResult | null = null
 
-  const cpu = cpuSettled.status === 'fulfilled' ? cpuSettled.value : null
-  const gpu = gpuSettled.status === 'fulfilled' ? gpuSettled.value : null
+  // Re-render the finished panels' bars relative to the slowest result so far,
+  // so whichever side finishes first shows immediately and bars rescale once
+  // both are in.
+  const renderBars = () => {
+    const maxMs = Math.max(cpu?.ms ?? 0, gpu?.ms ?? 0, 0.001)
+    if (cpu) cpuPanel.setResult(cpu, cpu.ms / maxMs)
+    if (gpu) gpuPanel.setResult(gpu, gpu.ms / maxMs)
+  }
 
-  const maxMs = Math.max(cpu?.ms ?? 0, gpu?.ms ?? 0, 0.001)
+  const cpuRun = sumPrimesCpu(n)
+    .then((r) => {
+      cpu = r
+      renderBars()
+    })
+    .catch(() => cpuPanel.setError('CPU computation failed.'))
 
-  if (cpu) cpuPanel.setResult(cpu, cpu.ms / maxMs)
-  else cpuPanel.setError('CPU computation failed.')
+  const gpuRun = gpuReady
+    ? sumPrimesGpu(n)
+        .then((r) => {
+          gpu = r
+          renderBars()
+        })
+        .catch(() => gpuPanel.setError('GPU computation failed.'))
+    : Promise.resolve()
 
-  if (gpu) gpuPanel.setResult(gpu, gpu.ms / maxMs)
-  else if (gpuReady) gpuPanel.setError('GPU computation failed.')
+  await Promise.all([cpuRun, gpuRun])
 
   if (cpu) renderVerdict(cpu, gpu)
 

@@ -51,7 +51,9 @@ export function createControls(initialN = 1_000_000): Controls {
   const valueEl = el.querySelector<HTMLOutputElement>("[data-value]")!;
   const runBtn = el.querySelector<HTMLButtonElement>("[data-run]")!;
 
-  let n = sliderToN(Number(slider.value));
+  // Start at the exact initial value so the displayed N is a round number;
+  // dragging then recomputes from the slider position.
+  let n = initialN;
   const renderValue = () => {
     valueEl.textContent = numberFmt.format(n);
   };
